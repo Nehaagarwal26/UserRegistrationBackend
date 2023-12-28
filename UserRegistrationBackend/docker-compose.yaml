@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  useregistrationsystem:
+    image: registration
+    container_name: registration
+    build: .
+    depends_on:
+      mysqldb:
+        condition: service_healthy
+    ports:
+      - '8080:8080'
+    environment:
+      MYSQL_HOST: mysqldb
+      MYSQL_USERNAME: dockermysql
+  mysqldb:
+    image: mysql
+    container_name: mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin","ping","-h", "mysqldb"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    ports:
+      - '3307:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: dockermysql
+      MYSQL_PASSWORD: DanviShanmuki@2
+      MYSQL_DATABASE: registrations
